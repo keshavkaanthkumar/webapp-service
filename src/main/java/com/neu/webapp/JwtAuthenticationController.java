@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neu.webapp.model.JwtRequest;
 import com.neu.webapp.model.JwtResponse;
+import com.neu.webapp.model.User;
 import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.service.UserDetailsServiceImpl;
 
@@ -41,8 +42,8 @@ public class JwtAuthenticationController {
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
-
-		return ResponseEntity.ok(new JwtResponse(token));
+		final User user=userDetailsService.loadUserByemail(authenticationRequest.getEmail());
+		return ResponseEntity.ok(new JwtResponse(token,user));
 	}
 
 
