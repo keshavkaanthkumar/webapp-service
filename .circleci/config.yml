@@ -48,7 +48,7 @@ workflows:
       - pr-check
  build_deploy:
     jobs:
-      - build_deploy:
+      - build:
         filters:
             branches:
               only: master
