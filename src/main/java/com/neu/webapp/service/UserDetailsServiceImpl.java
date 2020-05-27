@@ -37,13 +37,29 @@ public class UserDetailsServiceImpl implements UserDetailService {
 		}
 		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
 	}
+	@Override
+	public com.neu.webapp.model.User loadUserByemail(String email) throws UsernameNotFoundException {
+		Optional<com.neu.webapp.model.User> useropt = userDao.findById(email);
+		com.neu.webapp.model.User user=useropt.get();
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found with username: " + email);
+		}
+		return user;
+	}
 	public com.neu.webapp.model.User save(UserDTO user) {
+		if(userDao.existsById(user.getEmail()))
+		{
+			throw new RuntimeException("Username already exists");
+		}
+		else
+		{
 		com.neu.webapp.model.User newUser = new com.neu.webapp.model.User();
 		newUser.setLastname(user.getLastname());
 		newUser.setFirstname(user.getFirstname());
 		newUser.setEmail(user.getEmail());
 		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 		return userDao.save(newUser);
+		}
 	}
 	public com.neu.webapp.model.User update(UserDTO user) throws UsernameNotFoundException {
 		 
