@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.neu.webapp.model.PasswordReq;
 import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.repository.UserDao;
 
@@ -80,4 +81,18 @@ public class UserDetailsServiceImpl implements UserDetailService {
 		
 	    
 	}
+	public com.neu.webapp.model.User updatePassword(com.neu.webapp.model.User user,String newPwd) throws UsernameNotFoundException {
+		 if(user!=null) {
+		user.setPassword(bcryptEncoder.encode(newPwd));
+		 }
+		 else
+		 {
+				throw new UsernameNotFoundException("User not found ");
+
+		 }
+	
+		 return userDao.save(user);
+	
+    
+}
 }
