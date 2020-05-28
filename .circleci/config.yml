@@ -4,10 +4,9 @@ jobs:
     working_directory: ~/webapp-service
     docker:
     - image: circleci/openjdk:8-jdk-stretch
-    filters:
-      branches:
-        only:
-          - a2
+    branches:
+      only:
+        - master
     steps:
     - checkout
     - restore_cache:
