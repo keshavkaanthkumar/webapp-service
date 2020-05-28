@@ -1,5 +1,7 @@
-version: 2 
-jobs: 
+workflows:
+version: 2
+build_deploy: 
+ jobs: 
   build: 
     
     working_directory: ~/webapp-service 
@@ -21,7 +23,8 @@ jobs:
           path: target/surefire-reports   
       - store_artifacts: 
           path: target/webapp-0.0.1-SNAPSHOT.war
-      
+pr-check: 
+ jobs:    
   pr_check:
       working_directory: ~/webapp-service 
       docker:
@@ -39,18 +42,6 @@ jobs:
              path: target/surefire-reports
          - store_artifacts:
               path: target/webapp-0.0.1-SNAPSHOT.war
-      
-   
-workflows:
- version: 2
- pr-check:
-    jobs:
-      - pr_check
- build_deploy:
-    jobs:
-      - build
-#        filters:
-#            branches:
-#              only: master
+
 
       
