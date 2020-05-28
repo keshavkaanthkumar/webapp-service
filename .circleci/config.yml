@@ -1,57 +1,52 @@
-workflows:
-version: 2 
-jobs: 
-  build: 
-    
-    working_directory: ~/webapp-service 
-
-    docker: 
-      - image: circleci/openjdk:8-jdk-stretch 
-    steps: 
-
-      - checkout 
-      - restore_cache:     
-          key: webapp-service-{{ checksum "pom.xml" }}     
-      - run: mvn dependency:go-offline    
-      - save_cache: 
-          paths:
-            - ~/.m2
-          key: webapp-service-{{ checksum "pom.xml" }}      
-      - run: mvn package 
-      - store_test_results: 
-          path: target/surefire-reports   
-      - store_artifacts: 
-          path: target/webapp-0.0.1-SNAPSHOT.war
-      
+version: 2
+jobs:
+  build:
+    working_directory: ~/webapp-service
+    docker:
+    - image: circleci/openjdk:8-jdk-stretch
+    steps:
+    - checkout
+    - restore_cache:
+        key: webapp-service-{{ checksum "pom.xml" }}
+    - run: mvn dependency:go-offline
+    - save_cache:
+        paths:
+        - ~/.m2
+        key: webapp-service-{{ checksum "pom.xml" }}
+    - run: mvn package
+    - store_test_results:
+        path: target/surefire-reports
+    - store_artifacts:
+        path: target/webapp-0.0.1-SNAPSHOT.war
+    environment:
+    - CIRCLE_COMPARE_URL: https://github.com/kumarke-su2020/webapp-service/compare/1831da4cae3ba3aca8bd21b9c563fdafabb6cf00...85d146a3a6f121d926aab0a2c531935f8dea7d54
   pr_check:
-      working_directory: ~/webapp-service 
-      docker:
-         - image: circleci/openjdk:8-jdk-stretch
-      steps:
-         - checkout
-         - restore_cache:
-            key: webapp-service-{{ checksum "pom.xml" }}
-         - run: mvn dependency:go-offline
-         - save_cache:
-              paths:
-              - ~/.m2
-         - run: mvn package
-         - store_test_results:
-             path: target/surefire-reports
-         - store_artifacts:
-              path: target/webapp-0.0.1-SNAPSHOT.war
-      
-#   
-#workflows:
-# version: 2
-# pr-check:
-#    jobs:
-#      - pr_check
-# build_deploy:
-#    jobs:
-#      - build
-##        filters:
-##            branches:
-##              only: master
+    working_directory: ~/webapp-service
+    docker:
+    - image: circleci/openjdk:8-jdk-stretch
+    steps:
+    - checkout
+    - restore_cache:
+        key: webapp-service-{{ checksum "pom.xml" }}
+    - run: mvn dependency:go-offline
+    - save_cache:
+        paths:
+        - ~/.m2
+        key: webapp-service-{{ checksum "pom.xml" }}
+    - run: mvn package
+    - store_test_results:
+        path: target/surefire-reports
+    - store_artifacts:
+        path: target/webapp-0.0.1-SNAPSHOT.war
+    environment:
+    - CIRCLE_COMPARE_URL: https://github.com/kumarke-su2020/webapp-service/compare/1831da4cae3ba3aca8bd21b9c563fdafabb6cf00...85d146a3a6f121d926aab0a2c531935f8dea7d54
+workflows:
+  version: 2
+  pr-check:
+    jobs:
+    - pr_check
+  build_deploy:
+    jobs:
+    - build
 
       
