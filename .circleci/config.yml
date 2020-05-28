@@ -4,6 +4,10 @@ jobs:
     working_directory: ~/webapp-service
     docker:
     - image: circleci/openjdk:8-jdk-stretch
+    filters:
+      branches:
+        only:
+          - master
     steps:
     - checkout
     - restore_cache:
@@ -18,8 +22,6 @@ jobs:
         path: target/surefire-reports
     - store_artifacts:
         path: target/webapp-0.0.1-SNAPSHOT.war
-    environment:
-    - CIRCLE_COMPARE_URL: https://github.com/kumarke-su2020/webapp-service/compare/1831da4cae3ba3aca8bd21b9c563fdafabb6cf00...85d146a3a6f121d926aab0a2c531935f8dea7d54
   pr_check:
     working_directory: ~/webapp-service
     docker:
@@ -39,7 +41,6 @@ jobs:
     - store_artifacts:
         path: target/webapp-0.0.1-SNAPSHOT.war
     environment:
-    - CIRCLE_COMPARE_URL: https://github.com/kumarke-su2020/webapp-service/compare/1831da4cae3ba3aca8bd21b9c563fdafabb6cf00...85d146a3a6f121d926aab0a2c531935f8dea7d54
 workflows:
   version: 2
   pr-check:
@@ -47,6 +48,6 @@ workflows:
     - pr_check
   build_deploy:
     jobs:
-    - build
+    - build:
 
       
