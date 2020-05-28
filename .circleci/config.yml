@@ -45,11 +45,10 @@ workflows:
     jobs:
     - pr_check
   build_deploy:
-    triggers:
-       - schedule:
-           filters:
-             branches:
-               only:
-                 - master
+
     jobs:
-    - build
+    - build:
+        filters:  
+            branches:
+              only:  
+                - a2
