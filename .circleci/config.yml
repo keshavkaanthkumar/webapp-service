@@ -5,9 +5,9 @@ jobs:
     docker:
     - image: circleci/openjdk:8-jdk-stretch
     filters:
-      -branches:
+      branches:
         only:
-          - master
+          - a2
     steps:
     - checkout
     - restore_cache:
@@ -49,5 +49,3 @@ workflows:
   build_deploy:
     jobs:
     - build:
-
-      
