@@ -68,7 +68,7 @@ public class UserController {
 	}
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<?> getUser(@RequestParam(name = "email") String email) throws Exception {
-	
+	       
 	   
 	  		return ResponseEntity.ok(userDetailsService.loadUserByemail(email));
 	    
@@ -76,6 +76,9 @@ public class UserController {
 	}
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
 	public ResponseEntity<?> Update(@RequestBody UserDTO user) throws Exception {
+		if(user.getFirstname().trim().isEmpty()||user.getLastname().trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("First and last name cannot be empty");
+		}
 		User resuser;
 		try {
 			resuser=userDetailsService.update(user);
