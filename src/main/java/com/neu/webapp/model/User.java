@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 import javax.persistence.*;
 
 
@@ -38,7 +39,17 @@ public class User {
 	@JsonIgnore
 	@NotNull(message="Please select a password")
     private String password;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")	
+    private Cart cart;
+    
 
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
 
 	public String getEmail() {
 		return email;

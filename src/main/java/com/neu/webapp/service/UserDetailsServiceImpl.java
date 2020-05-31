@@ -11,8 +11,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.neu.webapp.model.Cart;
 import com.neu.webapp.model.PasswordReq;
 import com.neu.webapp.model.UserDTO;
+import com.neu.webapp.repository.CartDao;
 import com.neu.webapp.repository.UserDao;
 
 
@@ -25,6 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailService {
 	
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private CartDao cartDao;
 
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
@@ -59,7 +63,11 @@ public class UserDetailsServiceImpl implements UserDetailService {
 		newUser.setFirstname(user.getFirstname());
 		newUser.setEmail(user.getEmail());
 		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-		return userDao.save(newUser);
+		Cart cart =new Cart();
+		cart.setUser(newUser);
+		userDao.save(newUser);
+		cartDao.save(cart);
+		return  newUser;
 		}
 	}
 	public com.neu.webapp.model.User update(UserDTO user) throws UsernameNotFoundException {
