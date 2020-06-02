@@ -1,5 +1,8 @@
 package com.neu.webapp.service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +18,34 @@ public class BookServiceImpl implements BookService{
 	@Autowired
 	BookDao bookdao;
 	@Override
-	public Book AddBook(Book book) {
+	public Book AddBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
+		if(book.getQuantity()>99) {
+			throw new Exception("Quantity cannot be more than 99");
+		}
+		if(book.getPublication_date()==null) {
+			throw new Exception("publication date cannot be empty");
+		}
+		if(book.getISBN().trim().isEmpty()||book.getTitle().trim().isEmpty()) {
+			throw new Exception("Please Enter all details");
+		}
 		
 		return bookdao.save(book);
 	}
 
 	@Override
-	public void DeleteBook(int book_id) throws Exception {
+	public Book DeleteBook(int book_id) throws Exception {
 		// TODO Auto-generated method stub
-		if(bookdao.existsById(book_id)){
-			bookdao.deleteById(book_id);
-		}
-		else
-		{
-			throw new Exception("Book not found");
-		}
+		Book book=bookdao.findById(book_id).get();
+		book.setAvailable(false);
+		bookdao.save(book);
+		return book;
 	}
 
 	@Override
 	public Book UpdateBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
-		if(bookdao.existsById(book.getId())){
+		if(bookdao.existsById(book.getBook_id())){
 			bookdao.save(book);
 		}
 		else
@@ -48,8 +57,14 @@ public class BookServiceImpl implements BookService{
 	@Override
 	public List<Book> GetAllBooks() throws Exception {
 		// TODO Auto-generated method stub
-	
-		return (List<Book>) bookdao.findAll();
+		List<Book> books=bookdao.getAllBooks();
+		List<Book> availableBooks=new ArrayList<>();
+		for(Book book:books) {
+			if(book.isAvailable()) {
+			availableBooks.add(book);
+			}
+		}
+		return availableBooks;
 	}
 	@Override
 	public boolean isBookAvailable(int book_id) throws Exception {
@@ -62,6 +77,19 @@ public class BookServiceImpl implements BookService{
 			return false;
 		}
 	
+		
+	}
+	@Override
+	public Book GetBook(int book_id) throws Exception {
+		// TODO Auto-generated method stub
+		Book book=bookdao.findById(book_id).get();
+		if(book.isAvailable()) {
+			return book;
+		}
+		else
+		{
+			throw new Exception("Book not found");
+		}
 		
 	}
 

@@ -1,6 +1,7 @@
 package com.neu.webapp.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,21 +28,28 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value= {"seller.cart"})
+@JsonIgnoreProperties(value= {"cartSet"})
 public class Book {	
+	Book(){
+		this.isAvailable=true;
+	}
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private int book_id;
 @Column(nullable = false)
 private String ISBN;
+@JsonBackReference
+@OneToMany(mappedBy = "book")
+private Set<CartBook> cartSet = new HashSet<CartBook>();
 @Column(nullable = false)
 private String title;
 @Column
-@Temporal(TemporalType.TIMESTAMP)
+//@Temporal(TemporalType.TIMESTAMP)
 private Date publication_date;
 @Column(updatable = false)
 @Temporal(TemporalType.TIMESTAMP)
@@ -52,11 +60,12 @@ private Date created_date;
 @Temporal(TemporalType.TIMESTAMP)
 @LastModifiedDate
 private Date updated_date;
-@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
-@JoinTable(name = "Book_Authors", joinColumns = {
-		@JoinColumn(referencedColumnName = "book_id") }, inverseJoinColumns = {
-				@JoinColumn(referencedColumnName = "name") })
-private Set<Author> authors;
+//@ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+//@JoinTable(name = "Book_Authors", joinColumns = {
+//		@JoinColumn(referencedColumnName = "book_id") }, inverseJoinColumns = {
+//				@JoinColumn(referencedColumnName = "name") })
+@Column
+private String authors;
 @Column(nullable = false)
 private double price;
 
@@ -65,6 +74,32 @@ private String seller;
 @Max(99)
 @Column(nullable = false)
 private int quantity;
+@Column
+private boolean isAvailable;
+
+public Set<CartBook> getCartSet() {
+	return cartSet;
+}
+
+public void setCartSet(Set<CartBook> cartSet) {
+	this.cartSet = cartSet;
+}
+
+public boolean isAvailable() {
+	return isAvailable;
+}
+
+public void setAvailable(boolean isAvailable) {
+	this.isAvailable = isAvailable;
+}
+
+public String getAuthors() {
+	return authors;
+}
+
+public void setAuthors(String authors) {
+	this.authors = authors;
+}
 
 public String getSeller() {
 	return seller;
@@ -74,8 +109,12 @@ public void setSeller(String seller) {
 	this.seller = seller;
 }
 
-public int getId() {
+public int getBook_id() {
 	return book_id;
+}
+
+public void setBook_id(int book_id) {
+	this.book_id = book_id;
 }
 
 public String getISBN() {
@@ -108,12 +147,12 @@ public Date getUpdated_date() {
 public void setUpdated_date(Date updated_date) {
 	this.updated_date = updated_date;
 }
-public Set<Author> getAuthors() {
-	return authors;
-}
-public void setAuthors(Set<Author> authors) {
-	authors = authors;
-}
+//public Set<Author> getAuthors() {
+//	return authors;
+//}
+//public void setAuthors(Set<Author> authors) {
+//	authors = authors;
+//}
 public double getPrice() {
 	return price;
 }
