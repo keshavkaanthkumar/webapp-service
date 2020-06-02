@@ -4,18 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table
+//@Entity
+//@Table
 public class Author {
-	@Id
-private String name;
-
-public String getName() {
-	return name;
-}
-
-public void setName(String name) {
-	this.name = name;
-}
+//	@Id
+//private String name;
+//
+//public String getName() {
+//	return name;
+//}
+//
+//public void setName(String name) {
+//	this.name = name;
+//}
 
 }
