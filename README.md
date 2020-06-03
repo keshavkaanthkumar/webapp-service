@@ -6,6 +6,7 @@
 3. Maven
 4. Postman/browser
 5. IDE STS/Eclipse
+demo
 
 ## Build Instructions
 1. Open preferred IDE STS/Eclipse 
