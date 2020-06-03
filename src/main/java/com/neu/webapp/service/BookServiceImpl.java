@@ -20,8 +20,12 @@ public class BookServiceImpl implements BookService{
 	@Override
 	public Book AddBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
-		if(book.getQuantity()>99) {
-			throw new Exception("Quantity cannot be more than 99");
+		if(book.getQuantity()>999||book.getQuantity()<0) {
+			throw new Exception("Quantity cannot be more than 999 or less than 0");
+		}
+		if(book.getPrice()<0.01||book.getPrice()>9999.99)
+		{
+			throw new Exception("Price cannot be more than 9999.99 or less than 0.01");
 		}
 		if(book.getPublication_date()==null) {
 			throw new Exception("publication date cannot be empty");
@@ -46,6 +50,19 @@ public class BookServiceImpl implements BookService{
 	public Book UpdateBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
 		if(bookdao.existsById(book.getBook_id())){
+			if(book.getQuantity()>999||book.getQuantity()<0) {
+				throw new Exception("Quantity cannot be more than 999 or less than 0");
+			}
+			if(book.getPrice()<0.01||book.getPrice()>9999.99)
+			{
+				throw new Exception("Price cannot be more than 9999.99 or less than 0.01");
+			}
+			if(book.getPublication_date()==null) {
+				throw new Exception("publication date cannot be empty");
+			}
+			if(book.getISBN().trim().isEmpty()||book.getTitle().trim().isEmpty()) {
+				throw new Exception("Please Enter all details");
+			}
 			bookdao.save(book);
 		}
 		else
