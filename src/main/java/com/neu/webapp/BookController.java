@@ -45,7 +45,12 @@ public class BookController {
 	public ResponseEntity<?> updateBook(@RequestBody Book book,@RequestHeader("Authorization") String token) throws Exception {
 		
 		//book.setSeller(userExtractor.getUserFromtoken(token).getEmail());
+		try {
 		bookService.UpdateBook(book);
+	}
+	catch(Exception ex) {
+		return ResponseEntity.badRequest().body(ex.getMessage().toString());
+	}
 		return ResponseEntity.ok(book);
 	
 		

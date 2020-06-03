@@ -71,7 +71,7 @@ private double price;
 
 private String seller;
 @Min(0)
-@Max(99)
+@Max(999)
 @Column(nullable = false)
 private int quantity;
 @Column
