@@ -23,6 +23,7 @@ public class BookServiceImpl implements BookService{
 		if(book.getQuantity()>999||book.getQuantity()<0) {
 			throw new Exception("Quantity cannot be more than 999 or less than 0");
 		}
+		
 		if(book.getPrice()<0.01||book.getPrice()>9999.99)
 		{
 			throw new Exception("Price cannot be more than 9999.99 or less than 0.01");
@@ -33,6 +34,7 @@ public class BookServiceImpl implements BookService{
 		if(book.getISBN().trim().isEmpty()||book.getTitle().trim().isEmpty()) {
 			throw new Exception("Please Enter all details");
 		}
+		
 		
 		return bookdao.save(book);
 	}
