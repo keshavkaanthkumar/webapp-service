@@ -42,6 +42,7 @@ public class UserController {
 	String	emailpattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}";
 		if(user.getEmail().matches(emailpattern)) {
 	      if(user.getPassword().matches(pattern)) {
+	    	  if(user.getLastname().matches(".*[a-zA-Z]+.*")&&user.getFirstname().matches(".*[a-zA-Z]+.*")){
 	    	  try {
 	  			resuser=userDetailsService.save(user);
 	  		}
@@ -49,6 +50,10 @@ public class UserController {
 	  			return ResponseEntity.badRequest().body(ex.getMessage().toString());
 	  		}
 	  		return ResponseEntity.ok(resuser);
+	    	  }else
+	    	  {
+	    		  return ResponseEntity.badRequest().body("Invalid first or last name");
+	    	  }
 	      }
 	      else
 	      {
@@ -77,11 +82,20 @@ public class UserController {
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
 	public ResponseEntity<?> Update(@RequestBody UserDTO user) throws Exception {
 		if(user.getFirstname().trim().isEmpty()||user.getLastname().trim().isEmpty()) {
+			
 			return ResponseEntity.badRequest().body("First and last name cannot be empty");
 		}
 		User resuser;
-		try {
+		try {	    	  if(user.getLastname().matches(".*[a-zA-Z]+.*")&&user.getFirstname().matches(".*[a-zA-Z]+.*")){
+
+			
 			resuser=userDetailsService.update(user);
+		}
+		else
+		{
+  		  return ResponseEntity.badRequest().body("Invalid first or last name");
+
+		}
 		}
 		catch(Exception ex){
 			return ResponseEntity.badRequest().body(ex.getMessage().toString());
