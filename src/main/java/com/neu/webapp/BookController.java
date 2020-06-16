@@ -1,6 +1,11 @@
 package com.neu.webapp;
 
+
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.neu.webapp.model.Book;
+import com.neu.webapp.model.BookReqResp;
 import com.neu.webapp.model.CartBook;
+import com.neu.webapp.model.Image;
 import com.neu.webapp.model.Message;
 import com.neu.webapp.model.User;
 import com.neu.webapp.model.UserDTO;
+import com.neu.webapp.service.AmazonS3ClientService;
 import com.neu.webapp.service.BookService;
 import com.neu.webapp.service.CartService;
 import com.neu.webapp.service.UserExtractor;
@@ -29,11 +38,31 @@ public class BookController {
 	UserExtractor userExtractor;
 	@Autowired
 	CartService cartService;
+	@Autowired
+	AmazonS3ClientService amazons3client;
 	@RequestMapping(value = "/book", method = RequestMethod.POST)
-	public ResponseEntity<?> saveBook(@RequestBody Book book,@RequestHeader("Authorization") String token) throws Exception {
-	try {
+	public ResponseEntity<?> saveBook(@RequestBody BookReqResp bookreq,@RequestHeader("Authorization") String token) throws Exception {
+		Book book=bookreq.getBook();
+		try {
+		//amazons3client.uploadImagesToS3Bucket((String[])bookreq.getImage(), book);
 		book.setSeller(userExtractor.getUserFromtoken(token).getEmail());
-		bookService.AddBook(book);
+		HashMap<String,String> imagekeymap=new HashMap<>();
+		Set<Image> imagekeyset=new HashSet<Image>();
+		for(String image:bookreq.getImage()) {
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			timestamp.getTime();
+			Image imagekey=new Image(String.valueOf(timestamp.getTime()));
+			imagekey.setBook(book);
+			imagekeymap.put(image, imagekey.getName());
+		    imagekeyset.add(imagekey);
+			
+			
+			
+		}
+		book.setImages(imagekeyset);
+		
+		Book bookres=bookService.AddBook(book);
+		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 	}
 	catch(Exception ex) {
 		return ResponseEntity.badRequest().body(ex.getMessage().toString());
@@ -113,8 +142,14 @@ public class BookController {
 	}
 	@RequestMapping(value = "/book/{book_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getBook(@PathVariable("book_id") int book_id) throws Exception {
-		
-		return ResponseEntity.ok(bookService.GetBook(book_id));
+		Book book=bookService.GetBook(book_id);
+		List<String>images=amazons3client.downloadImagesFromS3Bucket(book);
+		BookReqResp bookResp=new BookReqResp();
+		String[] imageArray = new String[images.size()];
+	      images.toArray(imageArray);
+		bookResp.setBook(book);
+		bookResp.setImage(imageArray);
+		return ResponseEntity.ok(bookResp);
 	
 		
 	}

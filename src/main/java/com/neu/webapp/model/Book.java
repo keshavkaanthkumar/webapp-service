@@ -68,7 +68,9 @@ private Date updated_date;
 private String authors;
 @Column(nullable = false)
 private double price;
-
+@OneToMany(mappedBy = "book",cascade = CascadeType.ALL,
+orphanRemoval = true)
+private Set<Image> images=new HashSet<Image>();
 private String seller;
 @Min(0)
 @Max(999)
@@ -76,6 +78,14 @@ private String seller;
 private int quantity;
 @Column
 private boolean isAvailable;
+
+public Set<Image> getImages() {
+	return images;
+}
+
+public void setImages(Set<Image> images) {
+	this.images = images;
+}
 
 public Set<CartBook> getCartSet() {
 	return cartSet;
