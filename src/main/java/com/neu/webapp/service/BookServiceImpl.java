@@ -17,6 +17,8 @@ public class BookServiceImpl implements BookService{
 
 	@Autowired
 	BookDao bookdao;
+	@Autowired
+	AmazonS3ClientService awsclient;
 	@Override
 	public Book AddBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
@@ -65,6 +67,8 @@ public class BookServiceImpl implements BookService{
 			if(book.getISBN().trim().isEmpty()||book.getTitle().trim().isEmpty()) {
 				throw new Exception("Please Enter all details");
 			}
+			
+			awsclient.deleteImages(bookdao.findById(book.getBook_id()).get().getImages());
 			bookdao.save(book);
 		}
 		else

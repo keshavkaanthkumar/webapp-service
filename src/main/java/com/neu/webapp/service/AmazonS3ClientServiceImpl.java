@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -42,7 +44,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 
 
 
-	
+	@Async
 	public void uploadFileToS3Bucket(String fileName, File file, String bucketName,Book book) {
         PutObjectRequest request = new PutObjectRequest(bucketName,fileName , file);
         ObjectMetadata metadata = new ObjectMetadata();
@@ -51,9 +53,14 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
         this.amazonS3.putObject(request);
 		
 	}
+	
 	public S3Object downloadFileFromS3Bucket(String filename, String bucketname) {
 		S3Object obj=this.amazonS3.getObject(bucketname, filename);
 		return obj;
+	}
+	@Async
+	public void deleteObjectFromS3Bucket(String filename) {
+		this.amazonS3.deleteObject(new DeleteObjectRequest(bucketName, filename));
 	}
 
     @Override
@@ -67,6 +74,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 		
 	        }
 	}
+    
 	public File blobtoimage(String blob) {
 		String base64Data = blob.split(",")[1];
 
@@ -109,6 +117,13 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 			}
 		}
 		return imageList;
+		
+	}
+	@Override
+	public void deleteImages(Set<Image> images) {
+		for(Image image: images) {
+			this.deleteObjectFromS3Bucket(image.getName());
+		}
 		
 	}
 	

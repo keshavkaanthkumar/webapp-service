@@ -71,11 +71,28 @@ public class BookController {
 		
 	}
 	@RequestMapping(value = "/book", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateBook(@RequestBody Book book,@RequestHeader("Authorization") String token) throws Exception {
+	public ResponseEntity<?> updateBook(@RequestBody BookReqResp bookreq,@RequestHeader("Authorization") String token) throws Exception {
 		
 		//book.setSeller(userExtractor.getUserFromtoken(token).getEmail());
+		Book book=bookreq.getBook();
 		try {
-		bookService.UpdateBook(book);
+			HashMap<String,String> imagekeymap=new HashMap<>();
+			Set<Image> imagekeyset=new HashSet<Image>();
+			for(String image:bookreq.getImage()) {
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				timestamp.getTime();
+				Image imagekey=new Image(String.valueOf(timestamp.getTime()));
+				imagekey.setBook(book);
+				imagekeymap.put(image, imagekey.getName());
+			    imagekeyset.add(imagekey);
+				
+				
+				
+			}
+			book.setImages(imagekeyset);
+			
+		Book bookres=bookService.UpdateBook(book);
+		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 	}
 	catch(Exception ex) {
 		return ResponseEntity.badRequest().body(ex.getMessage().toString());
@@ -89,6 +106,7 @@ public class BookController {
 		
 		
 		Book book=bookService.DeleteBook(book_id);
+		amazons3client.deleteImages(book.getImages());
 		return ResponseEntity.ok(book);
 	
 		
