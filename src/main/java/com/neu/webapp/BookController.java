@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +50,8 @@ public class BookController {
 		HashMap<String,String> imagekeymap=new HashMap<>();
 		Set<Image> imagekeyset=new HashSet<Image>();
 		for(String image:bookreq.getImage()) {
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			timestamp.getTime();
-			Image imagekey=new Image(String.valueOf(timestamp.getTime()));
+			UUID uuid = UUID.randomUUID();
+			Image imagekey=new Image(uuid.toString());
 			imagekey.setBook(book);
 			imagekeymap.put(image, imagekey.getName());
 		    imagekeyset.add(imagekey);
@@ -76,12 +76,12 @@ public class BookController {
 		//book.setSeller(userExtractor.getUserFromtoken(token).getEmail());
 		Book book=bookreq.getBook();
 		try {
-			HashMap<String,String> imagekeymap=new HashMap<>();
+			HashMap<String,String> imagekeymap=new HashMap
+					<>();
 			Set<Image> imagekeyset=new HashSet<Image>();
 			for(String image:bookreq.getImage()) {
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-				timestamp.getTime();
-				Image imagekey=new Image(String.valueOf(timestamp.getTime()));
+				UUID uuid = UUID.randomUUID();
+				Image imagekey=new Image(uuid.toString());
 				imagekey.setBook(book);
 				imagekeymap.put(image, imagekey.getName());
 			    imagekeyset.add(imagekey);
@@ -90,7 +90,7 @@ public class BookController {
 				
 			}
 			book.setImages(imagekeyset);
-			
+	    
 		Book bookres=bookService.UpdateBook(book);
 		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 	}
