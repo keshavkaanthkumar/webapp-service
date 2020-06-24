@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-s3: circleci/aws-s3@x.y
+  aws-s3: circleci/aws-s3@1.0.15
 jobs:
   build:
     working_directory: ~/webapp-service
@@ -61,7 +61,9 @@ workflows:
   pr-check:   
     jobs:
     - pr_check
-    - deploy
+    - deploy:
+        requires:
+             - pr_check
   build_deploy:
     jobs:
     - build:
