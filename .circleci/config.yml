@@ -46,9 +46,9 @@ jobs:
     steps:
       - checkout
       - aws-s3/sync:
-          aws-access-key-id: ${ENV_aws_access_key}
-          aws-region: ${ENV_aws_region}
-          aws-secret-access-key: ${ENV_aws_secret_key}
+          aws-access-key-id: env_aws_access_key
+          aws-region: env_aws_region
+          aws-secret-access-key: env_aws_secret_key
           from: target
           overwrite: true
           to: 's3://codedeploy.keshavkaanth.tld'
