@@ -6,7 +6,8 @@ jobs:
     working_directory: ~/webapp-service
     docker:
     - image: circleci/openjdk:8-jdk-stretch
-    
+    docker:
+    - image: 'cimg/python:3.6'
     steps:
     - checkout
     - restore_cache:
@@ -39,27 +40,14 @@ jobs:
         path: target/surefire-reports
     - store_artifacts:
         path: target/webapp-0.0.1-SNAPSHOT.jar
-    environment:
-  deploy:
-    docker:
-      - image: 'cimg/python:3.6'
-    steps:
-      - checkout
-      # - aws-s3/sync:
-      #     from: target
-      #     overwrite: true
-      #     to: "s3://codedeploy.keshavkaanth.tld"
-      - aws-s3/copy:
-          from: target/webapp-0.0.1-SNAPSHOT.jar
-          to: "s3://codedeploy.keshavkaanth.tld"
+    - aws-s3/copy:
+        from: target/webapp-0.0.1-SNAPSHOT.jar
+        to: "s3://codedeploy.keshavkaanth.tld"
 workflows:
   version: 2
   pr-check:   
     jobs:
     - pr_check
-    - deploy:
-        requires:
-             - pr_check
   build_deploy:
     jobs:
     - build:
