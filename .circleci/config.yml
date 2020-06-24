@@ -50,7 +50,6 @@ jobs:
       #     overwrite: true
       #     to: "s3://codedeploy.keshavkaanth.tld"
       - aws-s3/copy:
-          arguments: '--dry-run'
           from: target/webapp-0.0.1-SNAPSHOT.jar
           to: "s3://codedeploy.keshavkaanth.tld"
 workflows:
