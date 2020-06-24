@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@x.y
 jobs:
   build:
     working_directory: ~/webapp-service
@@ -18,7 +20,7 @@ jobs:
     - store_test_results:
         path: target/surefire-reports
     - store_artifacts:
-        path: target/webapp-0.0.1-SNAPSHOT.war
+        path: target/webapp-0.0.1-SNAPSHOT.jar
   pr_check:
     working_directory: ~/webapp-service
     docker:
@@ -36,14 +38,30 @@ jobs:
     - store_test_results:
         path: target/surefire-reports
     - store_artifacts:
-        path: target/webapp-0.0.1-SNAPSHOT.war
+        path: target/webapp-0.0.1-SNAPSHOT.jar
     environment:
+  deploy:
+    docker:
+      - image: 'cimg/python:3.6'
+    steps:
+      - checkout
+      - aws-s3/sync:
+          aws-access-key-id: $aws_access_key
+          aws-region: $aws_region
+          aws-secret-access-key: $aws_secret_key
+          from: target
+          overwrite: true
+          to: 's3://codedeploy.keshavkaanth.tld'
+      - aws-s3/copy:
+          arguments: '--dry-run'
+          from: target/webapp-0.0.1-SNAPSHOT.jar
+          to: 's3://codedeploy.keshavkaanth.tld'
 workflows:
   version: 2
-  pr-check:
-    
+  pr-check:   
     jobs:
     - pr_check
+    - deploy
   build_deploy:
     jobs:
     - build:
