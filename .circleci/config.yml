@@ -44,10 +44,9 @@ jobs:
     - run: 
         name: Zip files
         command:
-         BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
+         BUILD_COUNTER=env_CIRCLE_BUILD_NUM
          zip -r ${BUILD_COUNTER}_webapp-server.zip *
     - aws-s3/copy:
-        BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
         from: ${BUILD_COUNTER}_webapp-server.zip
         to: "s3://codedeploy.keshavkaanth.tld"
   aws-code-deploy/deploy:
