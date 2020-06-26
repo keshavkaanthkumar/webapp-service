@@ -47,19 +47,24 @@ jobs:
          BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
          zip -r ${BUILD_COUNTER}_webapp-server.zip *
     - aws-s3/copy:
+        BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
         from: ${BUILD_COUNTER}_webapp-server.zip
         to: "s3://codedeploy.keshavkaanth.tld"
-    - aws-code-deploy/deploy:
-        application-name:   csye6225-webapp
-        deployment-group: csye6225-webapp-deployment
-        service-role-arn: arn:aws:iam::479623124360:role/Code-Deploy
-        bundle-bucket: codedeploy.keshavkaanth.tld
-        bundle-key: ${BUILD_COUNTER}_webapp-server.zip
+  aws-code-deploy/deploy:
+    application-name:   csye6225-webapp
+    deployment-group: csye6225-webapp-deployment
+    service-role-arn: arn:aws:iam::479623124360:role/Code-Deploy
+    bundle-bucket: codedeploy.keshavkaanth.tld
+    bundle-key: ${BUILD_COUNTER}_webapp-server.zip
 workflows:
   version: 2
   pr-check:   
     jobs:
     - pr_check
+    - aws-code-deploy/deploy:
+       requires:
+        - pr_check
+        
   build_deploy:
     jobs:
     - build:
