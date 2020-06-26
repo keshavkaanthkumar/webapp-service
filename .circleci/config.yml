@@ -1,6 +1,8 @@
 version: 2.1
 orbs:
   aws-s3: circleci/aws-s3@1.0.15
+  aws-code-deploy: circleci/aws-code-deploy@1.0.1
+
 jobs:
   build:
     working_directory: ~/webapp-service
@@ -47,6 +49,12 @@ jobs:
     - aws-s3/copy:
         from: ${BUILD_COUNTER}_webapp-server.zip
         to: "s3://codedeploy.keshavkaanth.tld"
+    - aws-code-deploy/deploy:
+        application-name:   csye6225-webapp
+        deployment-group: csye6225-webapp-deployment
+        service-role-arn: arn:aws:iam::479623124360:role/Code-Deploy
+        bundle-bucket: codedeploy.keshavkaanth.tld
+        bundle-key: ${BUILD_COUNTER}_webapp-server.zip
 workflows:
   version: 2
   pr-check:   
