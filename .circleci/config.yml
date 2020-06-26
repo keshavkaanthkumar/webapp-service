@@ -39,8 +39,13 @@ jobs:
         path: target/surefire-reports
     - store_artifacts:
         path: target/webapp-0.0.1-SNAPSHOT.jar
+    - run: 
+        name: Zip files
+        command:
+         BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
+         zip -r ${BUILD_COUNTER}_webapp-server.zip *
     - aws-s3/copy:
-        from: target/webapp-0.0.1-SNAPSHOT.jar
+        from: ${BUILD_COUNTER}_webapp-server.zip
         to: "s3://codedeploy.keshavkaanth.tld"
 workflows:
   version: 2
