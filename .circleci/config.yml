@@ -63,7 +63,6 @@ jobs:
             BUILD_COUNTER="${CIRCLE_BUILD_NUM}"
             echo "${BUILD_COUNTER}"
             ls -al
-            cd webapp-service
             zip -r ${BUILD_COUNTER}_webapp.zip *
             aws s3 cp ${BUILD_COUNTER}_webapp.zip s3://codedeploy.keshavkaanth.tld --region ${AWS_REGION}
             aws deploy create-deployment --application-name csye6225-webapp \
