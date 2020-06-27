@@ -2,10 +2,10 @@
 
 # This script is executed before copying the source
 
-export app_root=/home/ubuntu/cddemo
+export app_root=/home/ubuntu/webapp
 if [ -d "$app_root" ];then
-    rm -rf /home/ubuntu/cddemo
-    mkdir -p /home/ubuntu/cddemo
+    rm -rf /home/ubuntu/webapp
+    mkdir -p /home/ubuntu/webapp
 else
-    mkdir -p /home/ubuntu/cddemo
+    mkdir -p /home/ubuntu/webapp
 fi
