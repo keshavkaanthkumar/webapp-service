@@ -1,3 +1,4 @@
 #!/bin/bash
-cd service
+cd ..
+cd target
 java -jar webapp-0.0.1-SNAPSHOT.jar
