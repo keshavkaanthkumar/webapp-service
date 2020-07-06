@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.neu.webapp.DiagnosticsConfig;
 import com.neu.webapp.model.Book;
 import com.neu.webapp.repository.BookDao;
+import com.timgroup.statsd.StatsDClient;
 
 @Service
 public class BookServiceImpl implements BookService{
@@ -19,7 +21,11 @@ public class BookServiceImpl implements BookService{
 	BookDao bookdao;
 	@Autowired
 	AmazonS3ClientService awsclient;
-	@Override
+
+
+	  @Autowired
+	    private StatsDClient statsDClient;
+		@Override
 	public Book AddBook(Book book) throws Exception {
 		// TODO Auto-generated method stub
 		if(book.getQuantity()>999||book.getQuantity()<0) {
@@ -36,9 +42,13 @@ public class BookServiceImpl implements BookService{
 		if(book.getISBN().trim().isEmpty()||book.getTitle().trim().isEmpty()) {
 			throw new Exception("Please Enter all details");
 		}
+		long startTime = System.currentTimeMillis();
+		Book bookres=bookdao.save(book);
+		 long endTime = System.currentTimeMillis();
+         long duration = (endTime - startTime);
+         statsDClient.recordExecutionTime("Saved book in database:",duration);
 		
-		
-		return bookdao.save(book);
+		return bookres;
 	}
 
 	@Override

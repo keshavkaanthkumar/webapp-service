@@ -1,2 +1,2 @@
 #!/bin/bash
-killall -s KILL java
+sudo service webapp stop
