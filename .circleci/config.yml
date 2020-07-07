@@ -22,7 +22,7 @@ jobs:
     - store_test_results:
         path: target/surefire-reports
     - store_artifacts:
-        path: target/webapp-0.0.1-SNAPSHOT.war
+        path: target/webapp-0.0.1-SNAPSHOT.jar
   pr_check:
     working_directory: ~/webapp-service
     docker:
@@ -40,7 +40,7 @@ jobs:
     - store_test_results:
         path: target/surefire-reports
     - store_artifacts:
-        path: target/webapp-0.0.1-SNAPSHOT.war
+        path: target/webapp-0.0.1-SNAPSHOT.jar
     # - run: 
     #     name: Zip files
     #     command:
