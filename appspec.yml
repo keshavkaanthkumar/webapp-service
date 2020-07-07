@@ -3,6 +3,8 @@ os: linux
 files:
 - source: /target
   destination: /home/ubuntu/webapp
+- source: /AmazonCloudWatch-config.json
+  destination: /opt/aws/amazon-cloudwatch-agent/etc
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
