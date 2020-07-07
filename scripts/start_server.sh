@@ -1,16 +1,13 @@
 #!/bin/bash
-
-
-sudo groupadd tomcat
 cd /home/ubuntu/webapp
-sudo chown ubuntu:ubuntu webapp-0.0.1-SNAPSHOT.jar
+sudo chown tomcat:tomcat webapp-0.0.1-SNAPSHOT.jar
 sudo chmod 500 webapp-0.0.1-SNAPSHOT.jar
 cd /etc/systemd/system
 sudo touch tomcat.service
 sudo chmod 777 tomcat.service
 echo '[Unit]' >> tomcat.service
 echo 'Description=Apache Tomcat Web Application Container' >> tomcat.service
-echo 'After=syslog.target network.target' >> tomcat.service",
+echo 'After=syslog.target network.target' >> tomcat.service
 echo '[Service]' >> tomcat.service
 echo 'Type=forking' >> tomcat.service
 echo 'Environment=JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> tomcat.service
