@@ -1,19 +1,9 @@
 <configuration>
    <timestamp key="byDay" datePattern="yyyyMMdd'T'HHmmss"/>
- 
-   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-      <filter class="ch.qos.logback.classic.filter.LevelFilter">
-         <level>INFO</level>
-         <onMatch>ACCEPT</onMatch>
-         <onMismatch>DENY</onMismatch>
-      </filter>
-      <encoder>
-         <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-      </encoder>
-   </appender>
+
  
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-      <file> /home/keshav/Keshav/log-${byDay}.txt </file>
+      <file> /home/keshav/Keshav/webapp.txt </file>
       <append>true</append>
       <encoder>
          <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
@@ -22,7 +12,6 @@
  
    <root level="debug">
       <appender-ref ref="FILE" />
-      <appender-ref ref="STDOUT" />
    </root>
  
 </configuration>

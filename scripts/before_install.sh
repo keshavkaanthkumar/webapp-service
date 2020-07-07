@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 export app_root=/home/ubuntu/webapp
