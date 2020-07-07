@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/ubuntu/webapp
-sudo chown tomcat:tomcat webapp-0.0.1-SNAPSHOT.jar
+sudo chown tomcat webapp-0.0.1-SNAPSHOT.jar
 sudo chmod 500 webapp-0.0.1-SNAPSHOT.jar
 cd /etc/systemd/system
 sudo touch tomcat.service
