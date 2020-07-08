@@ -33,22 +33,20 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) res;
-    ServletInputStream mServletInputStream = request.getInputStream();
-    byte[] httpInData = new byte[request.getContentLength()];
-    int retVal = -1;
-    StringBuilder stringBuilderreq = new StringBuilder();
-
-    while ((retVal = mServletInputStream.read(httpInData)) != -1) {
-        for (int i = 0; i < retVal; i++) {
-            stringBuilderreq.append(Character.toString((char) httpInData[i]));
-        }
-    }
-
-
+//    ServletInputStream mServletInputStream = request.getInputStream();
+//    byte[] httpInData = new byte[request.getContentLength()];
+//    int retVal = -1;
+//    StringBuilder stringBuilderreq = new StringBuilder();
+//
+//    while ((retVal = mServletInputStream.read(httpInData)) != -1) {
+//        for (int i = 0; i < retVal; i++) {
+//            stringBuilderreq.append(Character.toString((char) httpInData[i]));
+//        }
+//    }
     String url = ((HttpServletRequest)request).getRequestURL().toString();
     LOGGER.info("URL: "+ url);
-    LOGGER.info("Request: "+ stringBuilderreq.toString());
-    LOGGER.info("Response: "+ response.toString());
+//    LOGGER.info("Request: "+ stringBuilderreq.toString());
+//    LOGGER.info("Response: "+ response.toString());
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     response.setHeader("Access-Control-Allow-Credentials", "true");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,PUT");
