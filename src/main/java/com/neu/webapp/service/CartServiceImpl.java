@@ -11,6 +11,7 @@ import com.neu.webapp.model.CartBook;
 import com.neu.webapp.repository.BookDao;
 import com.neu.webapp.repository.CartBookDao;
 import com.neu.webapp.repository.CartDao;
+import com.timgroup.statsd.StatsDClient;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -22,7 +23,8 @@ public class CartServiceImpl implements CartService{
 	BookDao bookDao;
 	@Autowired
 	BookService bookService;
-
+    @Autowired
+    StatsDClient statsdclient;
 	@Override
 	public void AddBooktoCart(int cart_id,int book_id,int quantity) throws Exception {
 		// TODO Auto-generated method stub
@@ -44,7 +46,12 @@ public class CartServiceImpl implements CartService{
 			cartBook.setBook(book);
 			cartBook.setCart(cart);
 			cartBook.setQuantity(quantity);
+			long startTime = System.currentTimeMillis();
+
 			cartbookDao.save(cartBook);
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startTime);
+			statsdclient.recordExecutionTime("Add book to cart query time:", duration);
 		}
 		else
 		{
@@ -55,20 +62,34 @@ public class CartServiceImpl implements CartService{
 	@Override
 	public void RemovefromCart(int cart_id,int book_id) {
 		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
+
 		cartbookDao.removeBookFromCart(cart_id, book_id);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Remove book from cart query time:", duration);
 	}
 
 
 	@Override
 	public void createCart(Cart cart) {
+		long startTime = System.currentTimeMillis();
+
 		cartDao.save(cart);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Create cart query time:", duration);
 		
 	}
 
 	@Override
 	public List<CartBook> getCart(int cart_id) {
 		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
 		List<CartBook> books= cartbookDao.getCart(cart_id);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Fetch cart query time:", duration);
 	//	List<Book> books=(List<Book>)bookDao.findAllById(bookids);
 		return books;
 	}

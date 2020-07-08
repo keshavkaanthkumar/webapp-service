@@ -48,7 +48,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 
 
 
-	@Async
+	
 	public void uploadFileToS3Bucket(String fileName, File file, String bucketName,Book book) {
         PutObjectRequest request = new PutObjectRequest(bucketName,fileName , file);
         ObjectMetadata metadata = new ObjectMetadata();
@@ -70,7 +70,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 	     statsdclient.recordExecutionTime("Time taken - Download image from S3",times);
 		return obj;
 	}
-	@Async
+	
 	public void deleteObjectFromS3Bucket(String filename) {
 		long start = System.currentTimeMillis();
 		this.amazonS3.deleteObject(new DeleteObjectRequest(bucketName, filename));

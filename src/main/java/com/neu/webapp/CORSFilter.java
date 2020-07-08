@@ -33,8 +33,8 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
     HttpServletResponse response = (HttpServletResponse) res;
     String url = ((HttpServletRequest)request).getRequestURL().toString();
     LOGGER.info("URL: "+ url);
-    LOGGER.info("Request: "+ request);
-    LOGGER.info("Response: "+ response);
+    LOGGER.info("Request: "+ request.toString());
+    LOGGER.info("Response: "+ response.toString());
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     response.setHeader("Access-Control-Allow-Credentials", "true");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,PUT");
