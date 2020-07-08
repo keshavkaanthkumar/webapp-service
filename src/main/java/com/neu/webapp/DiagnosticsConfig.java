@@ -23,8 +23,9 @@ public class DiagnosticsConfig {
 
     @Bean
     public StatsDClient statsDClient() {
+        
         if (printMetrics){
-            return new NonBlockingStatsDClient("csye6225-spring2020", metricServerHost, metricServerPort);
+            return new NonBlockingStatsDClient("", metricServerHost, metricServerPort);
         }
         return new NoOpStatsDClient();
     }

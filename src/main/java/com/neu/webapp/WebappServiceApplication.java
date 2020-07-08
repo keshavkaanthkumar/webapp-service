@@ -16,7 +16,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class WebappServiceApplication {
 	private static final Logger LOGGER=LoggerFactory.getLogger(WebappServiceApplication.class);
 	public static void main(String[] args) {
-		LOGGER.info("Application started");
+		LOGGER.info("Application started!");
 		SpringApplication.run(WebappServiceApplication.class, args);
 		
 	}

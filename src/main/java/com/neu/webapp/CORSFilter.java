@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
 
-private final Logger log = LoggerFactory.getLogger(CORSFilter.class);
+private final Logger LOGGER = LoggerFactory.getLogger(CORSFilter.class);
 
 public CORSFilter() {
-    log.info("SimpleCORSFilter init");
+	LOGGER.info("Entered cors filter");
 }
 
 @Override
@@ -31,7 +31,10 @@ public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) res;
-
+    String url = ((HttpServletRequest)request).getRequestURL().toString();
+    LOGGER.info("URL: "+ url);
+    LOGGER.info("Request: "+ request);
+    LOGGER.info("Response: "+ response);
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     response.setHeader("Access-Control-Allow-Credentials", "true");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE,PUT");
