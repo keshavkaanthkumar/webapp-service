@@ -2,6 +2,7 @@ package com.neu.webapp;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
@@ -9,6 +10,7 @@ import com.timgroup.statsd.NoOpStatsDClient;
 import com.timgroup.statsd.NonBlockingStatsDClient;
 import com.timgroup.statsd.StatsDClient;
 
+@ComponentScan(basePackages = "com.neu.webapp")
 @Configuration
 public class DiagnosticsConfig {
 
