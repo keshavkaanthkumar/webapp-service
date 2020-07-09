@@ -51,6 +51,7 @@ public class BookController {
 	public ResponseEntity<?> saveBook(@RequestBody BookReqResp bookreq,@RequestHeader("Authorization") String token) throws Exception {
 		
 		long start = System.currentTimeMillis();
+		long duration=0;
 		Book book=bookreq.getBook();
 		try {
 		//amazons3client.uploadImagesToS3Bucket((String[])bookreq.getImage(), book);
@@ -71,8 +72,8 @@ public class BookController {
 		long startTime = System.currentTimeMillis();
 		Book bookres=bookService.AddBook(book);
 		long endTime = System.currentTimeMillis();
-		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Save book query time:", duration);
+		duration = (endTime - startTime);
+		//statsdclient.recordExecutionTime("Save book query time:", duration);
 		LOGGER.info("Book added");
 		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 
@@ -82,6 +83,7 @@ public class BookController {
 	}
 		long end = System.currentTimeMillis();
 		 long time = (end - start);
+		 statsdclient.recordExecutionTime("Save book query time:", duration);
 	     statsdclient.recordExecutionTime("Add book API call",time);
 	return ResponseEntity.ok(book);
 		
