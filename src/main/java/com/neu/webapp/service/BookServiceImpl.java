@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
 		Book bookres = bookdao.save(book);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsDClient.recordExecutionTime("Save book query time:", duration);
+		statsDClient.recordExecutionTime("Save book query time", duration);
         LOGGER.info("Book saved");
         LOGGER.info("Add book query time:" +duration);
 		return bookres;
@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 		bookdao.save(book);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsDClient.recordExecutionTime("delete book query time:", duration);
+		statsDClient.recordExecutionTime("Delete book query time", duration);
 		return book;
 	}
 
@@ -92,7 +92,11 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<Book> GetAllBooks() throws Exception {
 		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
 		List<Book> books = bookdao.getAllBooks();
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsDClient.recordExecutionTime("Get book query time", duration);
 		List<Book> availableBooks = new ArrayList<>();
 		for (Book book : books) {
 			if (book.isAvailable()) {
@@ -116,7 +120,11 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Book GetBook(int book_id) throws Exception {
 		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
 		Book book = bookdao.findById(book_id).get();
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsDClient.recordExecutionTime("Get book query time", duration);
 		if (book.isAvailable()) {
 			return book;
 		} else {

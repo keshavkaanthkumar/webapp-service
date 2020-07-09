@@ -51,7 +51,7 @@ public class CartServiceImpl implements CartService{
 			cartbookDao.save(cartBook);
 			long endTime = System.currentTimeMillis();
 			long duration = (endTime - startTime);
-			statsdclient.recordExecutionTime("Add book to cart query time:", duration);
+			statsdclient.recordExecutionTime("Add book to cart query time", duration);
 		}
 		else
 		{
@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService{
 		cartbookDao.removeBookFromCart(cart_id, book_id);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Remove book from cart query time:", duration);
+		statsdclient.recordExecutionTime("Remove book from cart query time", duration);
 	}
 
 
@@ -78,7 +78,7 @@ public class CartServiceImpl implements CartService{
 		cartDao.save(cart);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Create cart query time:", duration);
+		statsdclient.recordExecutionTime("Create cart query time", duration);
 		
 	}
 
@@ -89,7 +89,7 @@ public class CartServiceImpl implements CartService{
 		List<CartBook> books= cartbookDao.getCart(cart_id);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Fetch cart query time:", duration);
+		statsdclient.recordExecutionTime("Fetch cart query time", duration);
 	//	List<Book> books=(List<Book>)bookDao.findAllById(bookids);
 		return books;
 	}
