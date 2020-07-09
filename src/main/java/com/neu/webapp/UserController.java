@@ -42,7 +42,7 @@ public class UserController {
 	public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
 		long start = System.currentTimeMillis();
 		User resuser=null;
-		statsdclient.incrementCounter("Books created");
+	
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
 	String	emailpattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}";
 		if(user.getEmail().matches(emailpattern)) {

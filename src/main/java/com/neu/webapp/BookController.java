@@ -68,8 +68,11 @@ public class BookController {
 			
 		}
 		book.setImages(imagekeyset);
-		
+		long startTime = System.currentTimeMillis();
 		Book bookres=bookService.AddBook(book);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Save book query time:", duration);
 		LOGGER.info("Book added");
 		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 
@@ -103,8 +106,11 @@ public class BookController {
 				
 			}
 			book.setImages(imagekeyset);
-	    
+			long startTime = System.currentTimeMillis();
 		Book bookres=bookService.UpdateBook(book);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Update book query time:", duration);
 		LOGGER.info("Book Updated");
 		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 
@@ -122,8 +128,11 @@ public class BookController {
 	@RequestMapping(value = "/book/{book_id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteBook(@PathVariable("book_id") int book_id,@RequestHeader("Authorization") String token) throws Exception {
 		long start = System.currentTimeMillis();
-		
+		long startTime = System.currentTimeMillis();
 		Book book=bookService.DeleteBook(book_id);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Delete book query time:", duration);
 		amazons3client.deleteImages(book.getImages());
 		long end = System.currentTimeMillis();
 		 long time = (end - start);
@@ -137,7 +146,11 @@ public class BookController {
 		long start = System.currentTimeMillis();
 		User user=userExtractor.getUserFromtoken(token);
 		try {
+			long startTime = System.currentTimeMillis();
 		cartService.AddBooktoCart(user.getCart().getId(), book_id,quantity);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Add book to cart query time:", duration);
 		LOGGER.info("Book Added to cart");
 		}
 		catch(Exception ex) {
@@ -156,7 +169,11 @@ public class BookController {
 		User user=userExtractor.getUserFromtoken(token);
 		List<CartBook>books;
 		try {
+			long startTime = System.currentTimeMillis();
 		books=cartService.getCart(user.getCart().getId());
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Retrieve cart query time:", duration);
 		LOGGER.info("Cart retrieved");
 		}
 		catch(Exception ex) {
@@ -174,7 +191,11 @@ public class BookController {
 		long start = System.currentTimeMillis();
 		User user=userExtractor.getUserFromtoken(token);
 		try {
+			long startTime = System.currentTimeMillis();
 		cartService.RemovefromCart(user.getCart().getId(), book_id);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Delete book from cart query time:", duration);
 		LOGGER.info("Book removed from cart");
 		}
 		catch(Exception ex) {
@@ -197,7 +218,12 @@ public class BookController {
 	@RequestMapping(value = "/book/{book_id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getBook(@PathVariable("book_id") int book_id) throws Exception {
 		long start = System.currentTimeMillis();
+		long startTime = System.currentTimeMillis();
 		Book book=bookService.GetBook(book_id);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Retrive book query time:", duration);
+
 		statsdclient.incrementCounter("Book viewed "+book.getISBN());
 		List<String>images=amazons3client.downloadImagesFromS3Bucket(book);
 		BookReqResp bookResp=new BookReqResp();
