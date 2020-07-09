@@ -83,7 +83,7 @@ public class BookController {
 	}
 		long end = System.currentTimeMillis();
 		 long time = (end - start);
-		 statsdclient.recordExecutionTime("Save book query time:", duration);
+		 statsdclient.recordExecutionTime("Save book query time", duration);
 	     
 	return ResponseEntity.ok(book);
 		
@@ -112,7 +112,7 @@ public class BookController {
 		Book bookres=bookService.UpdateBook(book);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Update book query time:", duration);
+		statsdclient.recordExecutionTime("Update book query time", duration);
 		LOGGER.info("Book Updated");
 		amazons3client.uploadImagesToS3Bucket(imagekeymap, bookres);
 
@@ -152,7 +152,7 @@ public class BookController {
 		cartService.AddBooktoCart(user.getCart().getId(), book_id,quantity);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Add book to cart query time:", duration);
+		statsdclient.recordExecutionTime("Add book to cart query time", duration);
 		LOGGER.info("Book Added to cart");
 		}
 		catch(Exception ex) {
@@ -175,7 +175,7 @@ public class BookController {
 		books=cartService.getCart(user.getCart().getId());
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Retrieve cart query time:", duration);
+		statsdclient.recordExecutionTime("Retrieve cart query time", duration);
 		LOGGER.info("Cart retrieved");
 		}
 		catch(Exception ex) {
@@ -197,7 +197,7 @@ public class BookController {
 		cartService.RemovefromCart(user.getCart().getId(), book_id);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Delete book from cart query time:", duration);
+		statsdclient.recordExecutionTime("Delete book from cart query time", duration);
 		LOGGER.info("Book removed from cart");
 		}
 		catch(Exception ex) {
@@ -224,7 +224,7 @@ public class BookController {
 		Book book=bookService.GetBook(book_id);
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
-		statsdclient.recordExecutionTime("Retrive book query time:", duration);
+		statsdclient.recordExecutionTime("Retrive book query time", duration);
 
 		statsdclient.incrementCounter("Book viewed "+book.getISBN());
 		List<String>images=amazons3client.downloadImagesFromS3Bucket(book);
