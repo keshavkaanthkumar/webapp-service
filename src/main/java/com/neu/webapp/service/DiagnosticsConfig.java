@@ -1,4 +1,4 @@
-package com.neu.webapp;
+package com.neu.webapp.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
