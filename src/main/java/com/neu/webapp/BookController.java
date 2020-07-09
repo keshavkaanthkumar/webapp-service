@@ -84,7 +84,7 @@ public class BookController {
 		long end = System.currentTimeMillis();
 		 long time = (end - start);
 		 statsdclient.recordExecutionTime("Save book query time:", duration);
-	     statsdclient.recordExecutionTime("Add book API call",time);
+	     
 	return ResponseEntity.ok(book);
 		
 	}
