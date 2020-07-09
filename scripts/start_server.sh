@@ -1,3 +1,8 @@
 #!/bin/bash
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+    -a fetch-config \
+    -m ec2 \
+    -c file:/opt/amazon-cloudwatch-agent.json \
+    -s
 cd /home/ubuntu/webapp
 nohup java -jar webapp-0.0.1-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &

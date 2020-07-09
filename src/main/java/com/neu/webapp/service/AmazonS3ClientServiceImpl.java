@@ -33,6 +33,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.neu.webapp.model.Book;
 import com.neu.webapp.model.Image;
+import com.timgroup.statsd.StatsDClient;
+
 
 @Service
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
@@ -41,26 +43,40 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 	    private AmazonS3 amazonS3;
 	    @Value("${aws.s3.bucket}")
 	    private String bucketName;
+	    @Autowired
+	    private StatsDClient statsdclient;
 
 
 
-	@Async
+	
 	public void uploadFileToS3Bucket(String fileName, File file, String bucketName,Book book) {
         PutObjectRequest request = new PutObjectRequest(bucketName,fileName , file);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("book_id", String.valueOf(book.getBook_id()));
         request.setMetadata(metadata);
+    	long start = System.currentTimeMillis();
         this.amazonS3.putObject(request);
+        long ends = System.currentTimeMillis();
+		 long times = (ends - start);
+	     statsdclient.recordExecutionTime("Time taken - Upload image from S3",times);
 		
 	}
 	
 	public S3Object downloadFileFromS3Bucket(String filename, String bucketname) {
+		long start = System.currentTimeMillis();
 		S3Object obj=this.amazonS3.getObject(bucketname, filename);
+		 long ends = System.currentTimeMillis();
+		 long times = (ends - start);
+	     statsdclient.recordExecutionTime("Time taken - Download image from S3",times);
 		return obj;
 	}
-	@Async
+	
 	public void deleteObjectFromS3Bucket(String filename) {
+		long start = System.currentTimeMillis();
 		this.amazonS3.deleteObject(new DeleteObjectRequest(bucketName, filename));
+		long ends = System.currentTimeMillis();
+		 long times = (ends - start);
+	     statsdclient.recordExecutionTime("Time taken - Delete image from S3",times);
 	}
 
     @Override

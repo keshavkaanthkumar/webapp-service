@@ -20,6 +20,7 @@ import com.neu.webapp.model.JwtResponse;
 import com.neu.webapp.model.User;
 import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.service.UserDetailsServiceImpl;
+import com.timgroup.statsd.StatsDClient;
 
 
 @RestController
@@ -33,21 +34,28 @@ public class JwtAuthenticationController {
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
+	@Autowired
+	StatsDClient statsdclient;
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        
+		long start = System.currentTimeMillis();
 		authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		final User user=userDetailsService.loadUserByemail(authenticationRequest.getEmail());
+		
+			long end = System.currentTimeMillis();
+		 long time = (end - start);
+	     statsdclient.recordExecutionTime("Register user API call",time);
 		return ResponseEntity.ok(new JwtResponse(token,user));
 	}
 
 
 	private void authenticate(String username, String password) throws Exception {
+		
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {

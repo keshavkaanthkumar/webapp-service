@@ -24,6 +24,7 @@ import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.repository.UserDao;
 import com.neu.webapp.service.UserDetailsServiceImpl;
 import com.neu.webapp.service.UserExtractor;
+import com.timgroup.statsd.StatsDClient;
 
 @RestController
 public class UserController {
@@ -35,16 +36,24 @@ public class UserController {
 	UserDetailsServiceImpl userDetailsService;
 	@Autowired
 	UserExtractor userExtractor;
+	@Autowired
+	StatsDClient statsdclient;
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
+		long start = System.currentTimeMillis();
 		User resuser=null;
+	
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
 	String	emailpattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}";
 		if(user.getEmail().matches(emailpattern)) {
 	      if(user.getPassword().matches(pattern)) {
 	    	  if(user.getLastname().matches(".*[a-zA-Z]+.*")&&user.getFirstname().matches(".*[a-zA-Z]+.*")){
 	    	  try {
+	    		  
 	  			resuser=userDetailsService.save(user);
+	  			long end = System.currentTimeMillis();
+   			 long time = (end - start);
+   		     statsdclient.recordExecutionTime("Register user API call",time);
 	  		}
 	  		catch(Exception ex){
 	  			return ResponseEntity.badRequest().body(ex.getMessage().toString());
@@ -74,8 +83,8 @@ public class UserController {
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public ResponseEntity<?> getUser(@RequestParam(name = "email") String email) throws Exception {
 	       
-	   
-	  		return ResponseEntity.ok(userDetailsService.loadUserByemail(email));
+		Object obj=userDetailsService.loadUserByemail(email);
+	  		return ResponseEntity.ok(obj);
 	    
 		
 	}

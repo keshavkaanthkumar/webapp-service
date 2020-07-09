@@ -16,6 +16,7 @@ import com.neu.webapp.model.PasswordReq;
 import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.repository.CartDao;
 import com.neu.webapp.repository.UserDao;
+import com.timgroup.statsd.StatsDClient;
 
 
 
@@ -29,6 +30,8 @@ public class UserDetailsServiceImpl implements UserDetailService {
 	private UserDao userDao;
 	@Autowired
 	private CartDao cartDao;
+	@Autowired
+	private StatsDClient statsdclient;
 
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
@@ -65,8 +68,14 @@ public class UserDetailsServiceImpl implements UserDetailService {
 		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 		Cart cart =new Cart();
 		cart.setUser(newUser);
+		long startTime = System.currentTimeMillis();
+
 		userDao.save(newUser);
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime);
+		statsdclient.recordExecutionTime("Register user query time:", duration);
 		cartDao.save(cart);
+		
 		return  newUser;
 		}
 	}
