@@ -66,6 +66,7 @@ jobs:
             zip -r ${BUILD_COUNTER}_webapp.zip *
             aws s3 cp ${BUILD_COUNTER}_webapp.zip s3://codedeploy.keshavkaanth.me --region ${AWS_REGION}
             aws deploy create-deployment --application-name csye6225-webapp \
+            --auto-scaling-groups asg \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name csye6225-webapp-deployment \
             --ignore-application-stop-failures \
