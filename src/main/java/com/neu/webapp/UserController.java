@@ -22,6 +22,7 @@ import com.neu.webapp.model.PasswordReq;
 import com.neu.webapp.model.User;
 import com.neu.webapp.model.UserDTO;
 import com.neu.webapp.repository.UserDao;
+import com.neu.webapp.service.PasswordResetService;
 import com.neu.webapp.service.UserDetailsServiceImpl;
 import com.neu.webapp.service.UserExtractor;
 import com.timgroup.statsd.StatsDClient;
@@ -38,6 +39,8 @@ public class UserController {
 	UserExtractor userExtractor;
 	@Autowired
 	StatsDClient statsdclient;
+	@Autowired
+	PasswordResetService passwordresetservice;
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
 		long start = System.currentTimeMillis();
@@ -141,6 +144,20 @@ public class UserController {
 		    	  		"inclusion of special characters, such as @, #, $");
 		}
 	}
+	@RequestMapping(value = "/password/reset/{email}", method = RequestMethod.PUT)
+	public ResponseEntity<?> passwordReset(@RequestBody PasswordReq passwordReq,@PathVariable("email") String email) throws Exception {
+		//pass
+		try {
+		passwordresetservice.sendEmailToUser(email);
+		return ResponseEntity.ok(null);
+		}
+		catch(Exception ex) {
+			
+			return ResponseEntity.badRequest().body(ex.getMessage());
+
+		}
+	}
+	
 	private void authenticate(String username, String password) throws Exception {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
