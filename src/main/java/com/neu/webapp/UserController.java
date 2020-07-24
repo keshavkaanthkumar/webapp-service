@@ -145,7 +145,7 @@ public class UserController {
 		}
 	}
 	@RequestMapping(value = "/password/reset/{email}", method = RequestMethod.PUT)
-	public ResponseEntity<?> passwordReset(@RequestBody PasswordReq passwordReq,@PathVariable("email") String email) throws Exception {
+	public ResponseEntity<?> passwordReset(@PathVariable("email") String email) throws Exception {
 		//pass
 		try {
 		passwordresetservice.sendEmailToUser(email);
