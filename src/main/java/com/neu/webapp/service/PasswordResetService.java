@@ -21,7 +21,7 @@ public class PasswordResetService {
 	@Autowired
 	UserDao userDao;
 	//@Value("${cloud.snsTopic}")
-	private String snsTopic="webapp";
+	private String snsTopic="password_reset";
 
 	private static String topicArn = "";
 
@@ -43,9 +43,9 @@ public class PasswordResetService {
 		List<Topic> topics = snsClient.listTopics().getTopics();
         for(Topic topic: topics)
         {
-            if(topic.getTopicArn().endsWith("webapp")) {
+            if(topic.getTopicArn().endsWith("password_reset")) {
 
-                logger.info("Found the topic webapp");
+                logger.info("Found the topic password_reset");
                 PublishRequest req = new PublishRequest(topic.getTopicArn(),msg);
                 snsClient.publish(req);
                 break;
